@@ -20,7 +20,11 @@ public class NoteDetailsFragment extends Fragment {
 //    ключ
     private static final String ARG_NOTE = "ARG_NOTE";
 
-//    вспомогательный метод, в который передаются фрагменты для хранения
+    public NoteDetailsFragment() {
+    }
+
+
+    //    вспомогательный метод, в который передаются фрагменты для хранения
     public static NoteDetailsFragment newInstance(Note note){
         NoteDetailsFragment fragment = new NoteDetailsFragment();
         Bundle bundle = new Bundle();
@@ -38,7 +42,7 @@ public class NoteDetailsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        TextView noteHeadline = view.findViewById(R.id.note_headline);
+        TextView noteHeadline = view.findViewById(R.id.note_name);
         TextView noteText = view.findViewById(R.id.note_text);
 
 //        получить аргументы назад

@@ -1,5 +1,6 @@
 package com.example.gb_asl_notesapp.ui.list;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +22,32 @@ import java.util.List;
 //Отображает фрагменты на экране
 public class NoteListFragment extends Fragment {
 
+//    вспомогательный интерфейс для определения нажатия
+    public interface OnNoteClicked{
+        void onNoteClicked(Note note);
+    }
+
+    private OnNoteClicked onNoteClicked;
+
     private NoteRepository noteRepository;
+
+//    работает совместно с местным интерфесом
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+//        проверка на наследование интерфейса
+        if (context instanceof OnNoteClicked){
+            onNoteClicked = (OnNoteClicked) context;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+//        если активити оцепилась
+        onNoteClicked = null;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,10 +74,20 @@ public class NoteListFragment extends Fragment {
 
 //        заполнить список заметок
         for (Note note: notes){
-
 //            найти определить заголовок заметки
             View itemView = LayoutInflater.from(requireContext()).inflate(R.layout.item_headline_note, notesList, false);
-            TextView noteHeadLine = itemView.findViewById(R.id.note_headline);
+
+//            определить нажатие
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onNoteClicked != null){
+                        onNoteClicked.onNoteClicked(note);
+                    }
+                }
+            });
+
+            TextView noteHeadLine = itemView.findViewById(R.id.note_name);
             noteHeadLine.setText(note.getHeadline());
 
             notesList.addView(itemView);
