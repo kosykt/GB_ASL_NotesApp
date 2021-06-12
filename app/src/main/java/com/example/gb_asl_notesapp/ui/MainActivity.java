@@ -1,8 +1,10 @@
-package com.example.gb_asl_notesapp;
+package com.example.gb_asl_notesapp.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.gb_asl_notesapp.R;
 
 public class MainActivity extends AppCompatActivity {
 
