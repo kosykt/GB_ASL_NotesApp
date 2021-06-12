@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">GB_ASL_NotesApp</string>
+
+    <string name="msc">Москва загаловок</string>
+    <string name="ebrg">Екатеринбург загаловок</string>
+    <string name="nsk">Новосибирск загаловок</string>
+    <string name="sam">Самара загаловок</string>
+    <string name="spb">Санкт-Петербург загаловок</string>
+
+    <string name="msc1">Москва текст</string>
+    <string name="ebrg1">Екатеринбург текст</string>
+    <string name="nsk1">Новосибирск текст</string>
+    <string name="sam1">Самара текст</string>
+    <string name="spb1">Санкт-Петербург текст</string>
 </resources>
