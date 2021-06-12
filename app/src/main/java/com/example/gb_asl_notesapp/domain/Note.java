@@ -2,8 +2,8 @@ package com.example.gb_asl_notesapp.domain;
 
 import androidx.annotation.StringRes;
 
-public class Note {
 //    базовый класс хранения записей
+public class Note {
 
     @StringRes
     private final int name;
@@ -16,7 +16,7 @@ public class Note {
         this.memory = memory;
     }
 
-    public int getName() {
+    public int getHeadline() {
         return name;
     }
 

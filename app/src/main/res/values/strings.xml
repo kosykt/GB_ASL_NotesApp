@@ -1,12 +1,14 @@
 <resources>
     <string name="app_name">GB_ASL_NotesApp</string>
 
+    <!--хранение заголовка заметки-->
     <string name="msc">Москва загаловок</string>
     <string name="ebrg">Екатеринбург загаловок</string>
     <string name="nsk">Новосибирск загаловок</string>
     <string name="sam">Самара загаловок</string>
     <string name="spb">Санкт-Петербург загаловок</string>
 
+    <!--хранение текста заметки-->
     <string name="msc1">Москва текст</string>
     <string name="ebrg1">Екатеринбург текст</string>
     <string name="nsk1">Новосибирск текст</string>
