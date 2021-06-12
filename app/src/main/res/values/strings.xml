@@ -14,4 +14,6 @@
     <string name="nsk1">Новосибирск текст</string>
     <string name="sam1">Самара текст</string>
     <string name="spb1">Санкт-Петербург текст</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
