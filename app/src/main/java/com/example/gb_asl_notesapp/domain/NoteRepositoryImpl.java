@@ -15,13 +15,9 @@ public class NoteRepositoryImpl implements NoteRepository {
 //        Добавляет в ArrayList список заметок
 //        Пока все оглавления и текст заметок хранятся в ресурсах string
         result.add(new Note("Заголовок", "Текст"));
-        result.add(new Note("Заголовок1", "Текст1"));
-        result.add(new Note("Заголовок2", "Текст2"));
-        result.add(new Note("Заголовок3", "Текст3"));
-//        result.add(new Note(R.string.spb, R.string.spb1));
-//        result.add(new Note(R.string.ebrg, R.string.ebrg1));
-//        result.add(new Note(R.string.nsk, R.string.nsk1));
-//        result.add(new Note(R.string.sam, R.string.sam1));
+        result.add(new Note("Заголовок1", "Текст1 Текст1 Текст1 Текст1"));
+        result.add(new Note("Заголовок2", "Текст2 Текст2 Текст2 Текст2 Текст2 Текст2 Текст2 Текст2"));
+        result.add(new Note("Заголовок3", "Текст3 Текст3 Текст3 Текст3 Текст3 Текст3 Текст3 Текст3 Текст3 Текст3 Текст3 Текст3 "));
 
         return result;
     }
