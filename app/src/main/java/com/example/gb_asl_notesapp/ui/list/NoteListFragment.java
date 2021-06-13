@@ -88,7 +88,7 @@ public class NoteListFragment extends Fragment {
             });
 
             TextView noteHeadLine = itemView.findViewById(R.id.note_name);
-            noteHeadLine.setText(note.getHeadline());
+            noteHeadLine.setText(note.getName());
 
             notesList.addView(itemView);
         }

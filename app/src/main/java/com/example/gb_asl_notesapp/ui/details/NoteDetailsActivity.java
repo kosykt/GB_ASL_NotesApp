@@ -2,12 +2,10 @@ package com.example.gb_asl_notesapp.ui.details;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.gb_asl_notesapp.R;
 import com.example.gb_asl_notesapp.domain.Note;
-import com.example.gb_asl_notesapp.ui.list.NoteListFragment;
 
 public class NoteDetailsActivity extends AppCompatActivity {
 
@@ -26,7 +24,7 @@ public class NoteDetailsActivity extends AppCompatActivity {
 
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.note_list_container, NoteDetailsFragment.newInstance(note))
+                    .replace(R.id.container_name, NoteDetailsFragment.newInstance(note))
                     .commit();
         }
     }

@@ -49,7 +49,7 @@ public class NoteDetailsFragment extends Fragment {
         Note note = getArguments().getParcelable(ARG_NOTE);
 
 //        выставить значение для загаловка и тескта
-        noteHeadline.setText(note.getHeadline());
+        noteHeadline.setText(note.getName());
         noteText.setText(note.getText());
     }
 }

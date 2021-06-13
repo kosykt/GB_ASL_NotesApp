@@ -6,22 +6,19 @@ import android.os.Parcelable;
 import androidx.annotation.StringRes;
 
 //    базовый класс хранения записей
-public class Note  implements Parcelable {
+public class Note implements Parcelable{
 
-    @StringRes
-    private final int name;
+    private String name;
+    private String text;
 
-    @StringRes
-    private final int memory;
-
-    public Note(int name, int memory) {
+    public Note(String name, String text) {
         this.name = name;
-        this.memory = memory;
+        this.text = text;
     }
 
     protected Note(Parcel in) {
-        name = in.readInt();
-        memory = in.readInt();
+        name = in.readString();
+        text = in.readString();
     }
 
     public static final Creator<Note> CREATOR = new Creator<Note>() {
@@ -36,12 +33,12 @@ public class Note  implements Parcelable {
         }
     };
 
-    public int getHeadline() {
+    public String getName() {
         return name;
     }
 
-    public int getText() {
-        return memory;
+    public String getText() {
+        return text;
     }
 
     @Override
@@ -51,7 +48,7 @@ public class Note  implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(name);
-        dest.writeInt(memory);
+        dest.writeString(name);
+        dest.writeString(text);
     }
 }
