@@ -19,7 +19,6 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         setContentView(R.layout.activity_main);
     }
 
-
     @Override
     public void onNoteClicked(Note note) {
         Intent intent = new Intent(this, NoteDetailsActivity.class);
