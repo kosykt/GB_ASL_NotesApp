@@ -23,7 +23,6 @@ public class NoteDetailsFragment extends Fragment {
     public NoteDetailsFragment() {
     }
 
-
     //    вспомогательный метод, в который передаются фрагменты для хранения
     public static NoteDetailsFragment newInstance(Note note){
         NoteDetailsFragment fragment = new NoteDetailsFragment();
