@@ -3,6 +3,8 @@ package ru.geekbrains.notes.observer;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.geekbrains.notes.note.Note;
+
 // Обработчик подписок
 public class Publisher {
 
