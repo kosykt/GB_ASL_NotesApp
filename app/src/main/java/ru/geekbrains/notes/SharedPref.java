@@ -23,7 +23,7 @@ public class SharedPref {
     private Note loadNote(int id) {
         Note note = new Note();
         note.setValue(SharedPreferences.getString(NOTEVALUE + id, note.getValue()));
-        note.setHeader(SharedPreferences.getString(NOTEHEADER + id, note.getHeader()));
+        //note.setHeader(SharedPreferences.getString(NOTEHEADER + id, note.getHeader()));
         note.setID(SharedPreferences.getInt(NOTEID + id, note.getID()));
         note.setDate(SharedPreferences.getLong(NOTEDATE + id, note.getDate()));
         return note;
@@ -33,7 +33,6 @@ public class SharedPref {
     public ArrayList<Note> loadNotes() {
         int countNotes = SharedPreferences.getInt(COUNTNOTES, 0);
         ArrayList<Note> notes = new ArrayList<>();
-        //Note[] notes = new Note[countNotes];
         for (int i = 0; i < countNotes; i++) {
             notes.add(loadNote(i));
         }
@@ -44,7 +43,7 @@ public class SharedPref {
     private void saveNote(Note note, int id) {
         SharedPreferences.Editor editor = SharedPreferences.edit();
         editor.putString(NOTEVALUE + id, note.getValue());
-        editor.putString(NOTEHEADER + id, note.getHeader());
+        //editor.putString(NOTEHEADER + id, note.getHeader());
         editor.putInt(NOTEID + id, note.getID());
         editor.putLong(NOTEDATE + id, note.getDate());
         editor.apply();
@@ -57,6 +56,19 @@ public class SharedPref {
         for (int i = 0; i < notes.size(); i++) {
             saveNote(notes.get(i), i);
         }
+        editor.apply();
+    }
+
+    // Чтение настроек
+    public Settings loadSettings() {
+        return new Settings(SharedPreferences.getInt(APPSETTINGSTEXTSIZE, DEFAULTTEXTSIZE), SharedPreferences.getInt(APPSETTINGSSORTTYPE, DEFAULTSORTTYPE));
+    }
+
+    // Сохранение настроек
+    public void saveSettings(Settings settings) {
+        SharedPreferences.Editor editor = SharedPreferences.edit();
+        editor.putInt(APPSETTINGSTEXTSIZE, settings.getTextSize());
+        editor.putInt(APPSETTINGSSORTTYPE, settings.getSortType());
         editor.apply();
     }
 }

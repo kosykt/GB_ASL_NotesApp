@@ -7,11 +7,11 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +27,7 @@ import ru.geekbrains.notes.observer.ObserverNote;
 import ru.geekbrains.notes.observer.Publisher;
 import ru.geekbrains.notes.observer.PublisherHolder;
 import ru.geekbrains.notes.SharedPref;
+import ru.geekbrains.notes.ui.list.SearchResultFragment;
 
 public class ViewNoteFragment extends Fragment implements View.OnClickListener, ObserverNote {
 
@@ -123,6 +124,11 @@ public class ViewNoteFragment extends Fragment implements View.OnClickListener, 
                 textViewNoteValue.setText(note.getValue());
             } else
                 textViewNoteValue.setText("");
+
+            String[] textSize = getResources().getStringArray(R.array.text_size);
+            int textSizeId = ((GlobalVariables) getActivity().getApplication()).getTextSizeId();
+            float textSizeFloat = Float.parseFloat(textSize[textSizeId]);
+            textViewNoteValue.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSizeFloat);
         }
     }
 
@@ -148,15 +154,27 @@ public class ViewNoteFragment extends Fragment implements View.OnClickListener, 
             Log.v("Debug1", "ViewNoteFragment onClick button_edit");
             EditNoteFragment editNoteFragment = EditNoteFragment.newInstance(noteId);
 
-            Fragment ParentFragment = getParentFragment();
-            if (ParentFragment != null){
-                FragmentManager fragmentManager = ParentFragment.getFragmentManager();
-                if (fragmentManager != null){
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.add(R.id.frame_container_main, editNoteFragment);
-                    fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.commit();
-                }
+            if (getActivity() != null) {
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                SearchResultFragment searchResultFragment = (SearchResultFragment) fragmentManager.findFragmentByTag("SearchResultFragment");
+                if (searchResultFragment == null)
+                    if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                        if (getActivity() != null)
+                            fragmentManager = getActivity().getSupportFragmentManager();
+                    } else {
+                        fragmentManager = getActivity().getSupportFragmentManager();
+                        Fragment parentFragment = getParentFragment();
+                        if (parentFragment != null) {
+                            if (getActivity() != null)
+                                fragmentManager = parentFragment.getActivity().getSupportFragmentManager();
+                        }
+                    }
+
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                fragmentTransaction.add(R.id.frame_container_main, editNoteFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
             }
 
         } else if (v.getId() == R.id.button_delete) {
@@ -188,9 +206,12 @@ public class ViewNoteFragment extends Fragment implements View.OnClickListener, 
 
                     if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
 
-                        FragmentManager fragmentManager = getFragmentManager();
-                        if (fragmentManager != null) {
+                        //FragmentManager fragmentManager = getFragmentManager();
+                        if (getActivity() != null) {
+                            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                            //fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+                            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                             fragmentTransaction.remove(this);
                             fragmentTransaction.commit();
                         }

@@ -1,6 +1,11 @@
 package ru.geekbrains.notes.ui;
 
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,10 +13,6 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -89,8 +90,9 @@ public class DatepickerFragment extends Fragment {
 
                     textViewTop.setText(dateStr);
 
-                    FragmentManager fragmentManager = getFragmentManager();
-                    if (fragmentManager != null) {
+                    //FragmentManager fragmentManager = getFragmentManager();
+                    if (getActivity() != null) {
+                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                         fragmentManager.popBackStack();
                     }
 

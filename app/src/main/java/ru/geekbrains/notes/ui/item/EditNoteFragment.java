@@ -2,29 +2,29 @@ package ru.geekbrains.notes.ui.item;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+
 import java.util.Date;
 import java.util.List;
 
 import ru.geekbrains.notes.GlobalVariables;
-import ru.geekbrains.notes.R;
-import ru.geekbrains.notes.SharedPref;
 import ru.geekbrains.notes.note.Note;
+import ru.geekbrains.notes.R;
 import ru.geekbrains.notes.observer.Publisher;
 import ru.geekbrains.notes.observer.PublisherHolder;
-
-import static ru.geekbrains.notes.Constant.LENHEADER;
+import ru.geekbrains.notes.SharedPref;
 
 
 public class EditNoteFragment extends Fragment implements View.OnClickListener {
@@ -92,6 +92,12 @@ public class EditNoteFragment extends Fragment implements View.OnClickListener {
             Log.v("Debug1", "EditNoteFragment onViewCreated getArguments() != null noteId=" + noteId);
             Note note = ((GlobalVariables) getActivity().getApplication()).getNoteById(noteId);
             editTextNoteValue = view.findViewById(R.id.editTextNoteValue);
+
+            String[] textSize = getResources().getStringArray(R.array.text_size);
+            int textSizeId = ((GlobalVariables) getActivity().getApplication()).getTextSizeId();
+            float textSizeFloat = Float.parseFloat(textSize[textSizeId]);
+            editTextNoteValue.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSizeFloat);
+
             editTextNoteValue.setText(note.getValue());
         }
     }
@@ -103,20 +109,11 @@ public class EditNoteFragment extends Fragment implements View.OnClickListener {
         if (v.getId() == R.id.button_ok) {
             Log.v("Debug1", "EditNoteFragment onClick button_ok");
             String value = editTextNoteValue.getText().toString();
-            int lenHeader;
-            int lenValue = value.length();
-            if (lenValue > LENHEADER)
-                lenHeader = LENHEADER;
-            else
-                lenHeader = value.length();
-
-            String header = (editTextNoteValue.getText().toString().substring(0, lenHeader) + "...");
             Date date = new Date();
             if (getActivity() != null) {
                 List<Note> notes = ((GlobalVariables) getActivity().getApplication()).getNotes();
                 Note note = ((GlobalVariables) getActivity().getApplication()).getNoteById(noteId);
                 note.setDate(date.toInstant().getEpochSecond());
-                note.setHeader(header);
                 note.setValue(value);
 
                 if (note.getID() == -1) {
@@ -139,9 +136,10 @@ public class EditNoteFragment extends Fragment implements View.OnClickListener {
         }
 
         Log.v("Debug1", "EditNoteFragment onClick FragmentTransaction");
-        FragmentManager fragmentManager = getFragmentManager();
-        if (fragmentManager != null)
+        if (getActivity() != null) {
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             fragmentManager.popBackStack();
+        }
         Log.v("Debug1", "EditNoteFragment onClick end");
     }
 

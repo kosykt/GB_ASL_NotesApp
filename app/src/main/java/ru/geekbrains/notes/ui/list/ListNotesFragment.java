@@ -2,24 +2,29 @@ package ru.geekbrains.notes.ui.list;
 
 import android.content.Context;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import java.text.DateFormat;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
 import ru.geekbrains.notes.GlobalVariables;
-import ru.geekbrains.notes.R;
+import ru.geekbrains.notes.note.DateSorterComparator;
+import ru.geekbrains.notes.note.HeaderSorterComparator;
 import ru.geekbrains.notes.note.Note;
+import ru.geekbrains.notes.R;
 import ru.geekbrains.notes.observer.ObserverNote;
 import ru.geekbrains.notes.observer.Publisher;
 import ru.geekbrains.notes.observer.PublisherHolder;
@@ -42,13 +47,13 @@ public class ListNotesFragment extends Fragment implements ObserverNote {
         void onNoteClickedList(int noteID);
     }
 
-    private OnNoteClicked NoteClicked;
+    private OnNoteClicked noteClicked;
 
     public interface onDateClicked {
         void onDateClickedList(int noteID);
     }
 
-    private ListNotesFragment.onDateClicked onDateClicked;
+    private ListNotesFragment.onDateClicked dateClicked;
 
 
     @Override
@@ -57,11 +62,11 @@ public class ListNotesFragment extends Fragment implements ObserverNote {
         Log.v("Debug1", "ListNotesFragment onAttach");
 
         if (context instanceof OnNoteClicked) {
-            NoteClicked = (OnNoteClicked) context;
+            noteClicked = (OnNoteClicked) context;
         }
 
         if (context instanceof ListNotesFragment.onDateClicked) {
-            onDateClicked = (ListNotesFragment.onDateClicked) context;
+            dateClicked = (onDateClicked) context;
         }
 
         if (context instanceof PublisherHolder) {
@@ -74,8 +79,8 @@ public class ListNotesFragment extends Fragment implements ObserverNote {
     public void onDetach() {
         super.onDetach();
         Log.v("Debug1", "ListNotesFragment onDetach");
-        NoteClicked = null;
-        onDateClicked = null;
+        noteClicked = null;
+        dateClicked = null;
         if (publisher != null) {
             publisher.unsubscribe(this);
         }
@@ -107,19 +112,68 @@ public class ListNotesFragment extends Fragment implements ObserverNote {
         if (getActivity() != null && getActivity().getApplication() != null) {
             List<Note> notes = ((GlobalVariables) getActivity().getApplication()).getNotes();
 
-            for (Note note : notes) {
+
+            //Сортировка
+            int textSortId = ((GlobalVariables) getActivity().getApplication()).getSortTypeId();
+            Comparator<Note> dateSorter = new DateSorterComparator();
+            Comparator<Note> headerSorter = new HeaderSorterComparator();
+            switch (textSortId) {
+                case (1):
+                    notes.sort(dateSorter);
+                    break;
+                case (0):
+                    notes.sort(dateSorter.reversed());
+                    break;
+                case (3):
+                    notes.sort(headerSorter);
+                    break;
+                case (2):
+                    notes.sort(headerSorter.reversed());
+                    break;
+            }
+
+            for (int i = 0, notesSize = notes.size(); i < notesSize; i++) {
+                Note note = notes.get(i);
                 View viewTop = LayoutInflater.from(requireContext()).inflate(R.layout.view_item_note_top_textview, linearLayoutNotesList, false);
                 View viewBottom = LayoutInflater.from(requireContext()).inflate(R.layout.view_item_note_bottom_textview, linearLayoutNotesList, false);
 
-                viewBottom.setOnClickListener(v -> {
-                    if (NoteClicked != null) {
-                        NoteClicked.onNoteClickedList(note.getID());
+                viewTop.setOnClickListener(v -> {
+                    if (dateClicked != null) {
+                        dateClicked.onDateClickedList(note.getID());
                     }
                 });
 
-                viewTop.setOnClickListener(v -> {
-                    if (onDateClicked != null) {
-                        onDateClicked.onDateClickedList(note.getID());
+                viewBottom.setOnClickListener(v -> {
+                    if (noteClicked != null) {
+                        noteClicked.onNoteClickedList(note.getID());
+
+
+                        /*Activity activity = requireActivity();
+                        PopupMenu popupMenu = new PopupMenu(activity, v);
+                        activity.getMenuInflater().inflate(R.menu.popup, popupMenu.getMenu());
+                        Menu menu = popupMenu.getMenu();
+                        //menu.findItem(R.id.popup_view).setVisible(false);
+                        menu.add(0, 123456, 12, "Dynamic");
+                        popupMenu.setOnMenuItemClickListener(item -> {
+                            int id = item.getItemId();
+                            if (id == R.id.popup_view) {
+                                Toast.makeText(getContext(), "Chosen popup item view", Toast.LENGTH_SHORT).show();
+                                return true;
+                            } else if (id == R.id.popup_edit) {
+                                Toast.makeText(getContext(), "Chosen popup item edit2", Toast.LENGTH_SHORT).show();
+                                return true;
+                            } else if (id == R.id.popup_delete) {
+                                Toast.makeText(getContext(), "Chosen popup item delete", Toast.LENGTH_SHORT).show();
+                                return true;
+                            } else if (id == 123456) {
+                                Toast.makeText(getContext(), "Chosen new item added", Toast.LENGTH_SHORT).show();
+                                return true;
+                            }
+                            return true;
+                        });
+                        popupMenu.show();*/
+
+
                     }
                 });
 
@@ -129,13 +183,21 @@ public class ListNotesFragment extends Fragment implements ObserverNote {
                 DateFormat f = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.getDefault());
                 String dateStr = f.format(date);
 
+                //textViewTop.setPadding(0,50,0,0);
+
                 textViewTop.setText(dateStr);
                 textViewTop.setTag(note.getID());
 
                 Log.v("Debug1", "ListNotesFragment fillList textViewTop.getTag()=" + textViewTop.getTag());
 
                 TextView textViewBottom = viewBottom.findViewById(R.id.textViewBottom);
-                textViewBottom.setText(note.getHeader());
+
+                String[] textSize = getResources().getStringArray(R.array.text_size);
+                int textSizeId = ((GlobalVariables) getActivity().getApplication()).getTextSizeId();
+                float textSizeFloat = Float.parseFloat(textSize[textSizeId]);
+                textViewBottom.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSizeFloat);
+
+                textViewBottom.setText(note.getValue());
 
                 linearLayoutIntoScrollView.addView(viewTop);
                 linearLayoutIntoScrollView.addView(viewBottom);
@@ -165,5 +227,22 @@ public class ListNotesFragment extends Fragment implements ObserverNote {
         super.onPause();
         Log.v("Debug1", "ListNotesFragment onPause");
     }
+
+
+
+    /*@Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main_drawer, menu);
+    }*/
+
+    /*@Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Log.v("Debug1", "ListNotesFragment onOptionsItemSelected");
+        if (item.getItemId() == R.id.popup_view) {
+            Toast.makeText(getContext(), "popup_view", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }*/
 
 }

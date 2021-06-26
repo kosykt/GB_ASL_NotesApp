@@ -3,10 +3,8 @@ package ru.geekbrains.notes.note;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-
 public class Note implements Parcelable {
     private String value;
-    private String header;
     private int id;
     private long date;
 
@@ -14,16 +12,14 @@ public class Note implements Parcelable {
         this.id = -1;
     }
 
-    public Note(String value, String header, int id, long date) {
+    public Note(String value, int id, long date) {
         this.value = value;
-        this.header = header;
         this.id = id;
         this.date = date;
     }
 
     protected Note(Parcel in) {
         value = in.readString();
-        header = in.readString();
         id = in.readInt();
         date = in.readLong();
     }
@@ -46,14 +42,6 @@ public class Note implements Parcelable {
 
     public void setValue(String value) {
         this.value = value;
-    }
-
-    public String getHeader() {
-        return header;
-    }
-
-    public void setHeader(String header) {
-        this.header = header;
     }
 
     public int getID() {
@@ -80,8 +68,8 @@ public class Note implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(getValue());
-        dest.writeString(getHeader());
         dest.writeInt(getID());
         dest.writeLong(getDate());
     }
+
 }
