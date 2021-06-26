@@ -1,30 +1,70 @@
 package ru.geekbrains.notes;
 
 public class Settings {
-    private int sortType;
-    private int textSize;
+    private int orderType;
+    private int textSizeId;
+    private int maxCountLinesId;
 
-    public Settings(int sortType, int textSize) {
-        this.sortType = sortType;
-        this.textSize = textSize;
+    private int currentPosition;
+
+    private float textSize;
+    private int maxCountLines;
+
+    public int getCurrentPosition() {
+        return currentPosition;
+    }
+
+    public void setCurrentPosition(int currentPosition) {
+        this.currentPosition = currentPosition;
+    }
+
+    public void setOrderType(int orderType) {
+        this.orderType = orderType;
     }
 
     public Settings() {
     }
 
-    public int getSortType() {
-        return sortType;
+    public Settings(int orderType, int textSizeId, int maxCountLinesId) {
+        this.orderType = orderType;
+        this.textSizeId = textSizeId;
+        this.maxCountLinesId = maxCountLinesId;
     }
 
-    public void setSortType(int sortType) {
-        this.sortType = sortType;
+    public int getOrderType() {
+        return orderType;
     }
 
-    public int getTextSize() {
+    public int getTextSizeId() {
+        return textSizeId;
+    }
+
+    public void setTextSizeId(int textSizeId) {
+        this.textSizeId = textSizeId;
+    }
+
+    public int getMaxCountLinesId() {
+        return maxCountLinesId;
+    }
+
+    public void setMaxCountLinesId(int maxCountLinesId) {
+        this.maxCountLinesId = maxCountLinesId;
+    }
+
+    public float getTextSize() {
         return textSize;
     }
 
-    public void setTextSize(int textSize) {
+    public void setTextSize(float textSize) {
         this.textSize = textSize;
     }
+
+    public int getMaxCountLines() {
+        return maxCountLines;
+    }
+
+    public void setMaxCountLines(int maxCountLines) {
+        this.maxCountLines = maxCountLines;
+    }
+
 }
