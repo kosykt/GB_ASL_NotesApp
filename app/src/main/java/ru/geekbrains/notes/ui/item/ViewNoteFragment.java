@@ -25,11 +25,8 @@ import java.util.List;
 
 import ru.geekbrains.notes.GlobalVariables;
 import ru.geekbrains.notes.Settings;
-import ru.geekbrains.notes.note.Callback;
 import ru.geekbrains.notes.note.Note;
 import ru.geekbrains.notes.R;
-import ru.geekbrains.notes.note.NotesLocalRepositoryImpl;
-import ru.geekbrains.notes.note.NotesRepository;
 import ru.geekbrains.notes.observer.ObserverNote;
 import ru.geekbrains.notes.observer.Publisher;
 import ru.geekbrains.notes.observer.PublisherHolder;
@@ -37,16 +34,14 @@ import ru.geekbrains.notes.SharedPref;
 import ru.geekbrains.notes.ui.list.SearchResultFragment;
 
 import static ru.geekbrains.notes.Constant.TYPE_EVENT_DELETE_NOTE;
-import static ru.geekbrains.notes.Constant.TYPE_EVENT_EDIT_NOTE;
 
-public class ViewNoteFragment extends Fragment implements ObserverNote {
+public class ViewNoteFragment extends Fragment implements /*View.OnClickListener, */ObserverNote {
 
     private static final String ARG = "NOTE_ID";
 
     private int noteId = 0;
     private Publisher publisher;
     private Publisher publisher2;
-    private int position;
 
     private View viewFragment;
 
@@ -224,12 +219,10 @@ public class ViewNoteFragment extends Fragment implements ObserverNote {
         if (getActivity() != null && getActivity().getApplication() != null) {
             List<Note> notes = ((GlobalVariables) getActivity().getApplication()).getNotes();
             int prevID = 0;
-            position = 0;
-            Note note = new Note();
+            int position = 0;
             for (int i = 0; i < notes.size(); i++) {
                 if (notes.get(i).getID() == noteId) {
                     notes.remove(i);
-                    note = notes.get(i);
                     break;
                 }
                 prevID = notes.get(i).getID();
@@ -237,28 +230,14 @@ public class ViewNoteFragment extends Fragment implements ObserverNote {
             }
             Log.v("Debug1", "ViewNoteFragment onClick button_delete prevID=" + prevID);
             ((GlobalVariables) getActivity().getApplication()).setNotes(notes);
-
-            NotesRepository localRepository = new NotesLocalRepositoryImpl(getContext());
-            localRepository.removeNote(notes, note, new Callback<Object>() {
-                @Override
-                public void onSuccess(Object result) {
-                    /*if (publisher != null) {
-                        publisher.notify(position, TYPE_EVENT_DELETE_NOTE);
-                    }*/
-                    Log.v("Debug1", "ViewNoteFragment onClick button_delete onSuccess");
-                }
-            });
-
-
-            //if (getContext() != null) {
-                //new SharedPref(getContext()).saveNotes(notes);
+            if (getContext() != null) {
+                new SharedPref(getContext()).saveNotes(notes);
                 if (publisher != null) {
                     Log.v("Debug1", "ViewNoteFragment onClick button_delete notify");
                     publisher.notify(position, TYPE_EVENT_DELETE_NOTE);
                 }
                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                     if (getActivity() != null) {
-                        Log.v("Debug1", "ViewNoteFragment onClick button_delete getActivity() != null");
                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                         fragmentManager.popBackStack();
@@ -267,7 +246,7 @@ public class ViewNoteFragment extends Fragment implements ObserverNote {
                 } else {
                     fillViewNote(prevID, viewFragment);
                 }
-            //}
+            }
         }
     }
 
@@ -298,9 +277,8 @@ public class ViewNoteFragment extends Fragment implements ObserverNote {
 
     @Override
     public void updateNote(int noteID, int typeEvent) {
-        Log.v("Debug1", "ViewNoteFragment updateNote noteId=" + noteId + ", typeEvent=" + typeEvent);
-        if (typeEvent != TYPE_EVENT_DELETE_NOTE)
-            fillViewNote(noteId, viewFragment);
+        Log.v("Debug1", "ViewNoteFragment updateNote noteId=" + noteId);
+        fillViewNote(noteId, viewFragment);
     }
 
     public void onResume() {

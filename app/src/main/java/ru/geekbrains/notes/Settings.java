@@ -4,27 +4,11 @@ public class Settings {
     private int orderType;
     private int textSizeId;
     private int maxCountLinesId;
-    private boolean cloudSync;
-    private int authTypeService;
-    private float textSize;
-    private int maxCountLines;
+
     private int currentPosition;
 
-    public int getAuthTypeService() {
-        return authTypeService;
-    }
-
-    public void setAuthTypeService(int authTypeService) {
-        this.authTypeService = authTypeService;
-    }
-
-    public boolean isCloudSync() {
-        return cloudSync;
-    }
-
-    public void setCloudSync(boolean cloudSync) {
-        this.cloudSync = cloudSync;
-    }
+    private float textSize;
+    private int maxCountLines;
 
     public int getCurrentPosition() {
         return currentPosition;
@@ -39,14 +23,12 @@ public class Settings {
     }
 
     public Settings() {
-
     }
 
-    public Settings(int orderType, int textSizeId, int maxCountLinesId, int authTypeService) {
+    public Settings(int orderType, int textSizeId, int maxCountLinesId) {
         this.orderType = orderType;
         this.textSizeId = textSizeId;
         this.maxCountLinesId = maxCountLinesId;
-        this.authTypeService = authTypeService;
     }
 
     public int getOrderType() {

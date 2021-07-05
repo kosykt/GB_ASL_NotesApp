@@ -1,7 +1,6 @@
 package ru.geekbrains.notes.ui;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -11,7 +10,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,15 +17,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
-import com.vk.api.sdk.VK;
-import com.vk.api.sdk.auth.VKAccessToken;
-import com.vk.api.sdk.auth.VKAuthCallback;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -36,62 +26,22 @@ import ru.geekbrains.notes.GlobalVariables;
 import ru.geekbrains.notes.R;
 import ru.geekbrains.notes.Settings;
 import ru.geekbrains.notes.SharedPref;
-import ru.geekbrains.notes.note.Callback;
 import ru.geekbrains.notes.note.Note;
-import ru.geekbrains.notes.note.NotesRepository;
-import ru.geekbrains.notes.note.NotesLocalRepositoryImpl;
+import ru.geekbrains.notes.note.NoteRepository;
+import ru.geekbrains.notes.note.NoteRepositoryImpl;
 import ru.geekbrains.notes.observer.Publisher;
 import ru.geekbrains.notes.observer.PublisherHolder;
 
-import ru.geekbrains.notes.ui.auth.AuthFragment;
 import ru.geekbrains.notes.ui.item.ViewNoteFragment;
 import ru.geekbrains.notes.ui.settings.AboutFragment;
 import ru.geekbrains.notes.ui.settings.SettingsFragment;
-
-import static ru.geekbrains.notes.Constant.RC_SIGN_IN_GOOGLE;
-import static ru.geekbrains.notes.Constant.RC_VK_SIGN_IN;
 
 
 public class MainActivity extends AppCompatActivity implements PublisherHolder {
 
     private final Publisher publisher = new Publisher();
 
-
-
     private ActionBarDrawerToggle toggle;
-
-    List<Note> notes;
-
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        Log.v("Debug1", "AuthFragment onActivityResult");
-        if (requestCode == RC_VK_SIGN_IN) {
-            VKAuthCallback vkAuthCallback = new VKAuthCallback() {
-                @Override
-                public void onLogin(@NotNull VKAccessToken vkAccessToken) {
-                    //handleSignInResultVK(vkAccessToken);
-                    Log.v("Debug1", "MainActivity onActivityResult");
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    AuthFragment authFragment = (AuthFragment)fragmentManager.findFragmentByTag("AuthFragment");
-                    if (authFragment != null){
-                        Log.v("Debug1", "MainActivity onActivityResult authFragment=" + authFragment);
-                        authFragment.handleSignInResultVK(vkAccessToken);
-                    }
-                }
-
-                @Override
-                public void onLoginFailed(int i) {
-                }
-            };
-            VK.onActivityResult(requestCode, resultCode, data, vkAuthCallback);
-        }
-    }
-
-
 
     // Сохранение данных
     @Override
@@ -138,17 +88,13 @@ public class MainActivity extends AppCompatActivity implements PublisherHolder {
         if (savedInstanceState == null) {
             Log.v("Debug1", "MainActivity onCreate savedInstanceState == null");
             //Получаем доступ к репозиторию
-
+            NoteRepository noteRepository = new NoteRepositoryImpl();
 
             //Получаем заметки из репозитория
-            //List<Note> notes = notesRepository.getNotes();
-
-
-
+            List<Note> notes = noteRepository.getNotes(this);
 
             //Сохраняем заметки в глобальной переменной
-            /*
-            ((GlobalVariables) getApplication()).setNotes(notes);*/
+            ((GlobalVariables) getApplication()).setNotes(notes);
 
             Settings settings = (new SharedPref(this).loadSettings());
             ((GlobalVariables) getApplication()).setSettings(settings);
@@ -173,7 +119,6 @@ public class MainActivity extends AppCompatActivity implements PublisherHolder {
                     break;
             }
             settings.setMaxCountLines(maxCountLines);
-
 
 
         } else {
@@ -256,9 +201,8 @@ public class MainActivity extends AppCompatActivity implements PublisherHolder {
 
         TextView textView = navHeader.findViewById(R.id.textView_version_menu);
         if (textView != null) {
-            int versionCode = BuildConfig.VERSION_CODE;
+            //int versionCode = BuildConfig.VERSION_CODE;
             String versionName = BuildConfig.VERSION_NAME;
-            //String versionName = null;
             String strAbout = getResources().getString(R.string.menu_string) + versionName;
             textView.setText(strAbout);
         }
@@ -302,8 +246,7 @@ public class MainActivity extends AppCompatActivity implements PublisherHolder {
             Log.v("Debug1", "MainActivity addFragment fragmentTag=" + fragmentTag);
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            //fragmentTransaction.add(R.id.frame_container_main, fragment, fragmentTag);
-            fragmentTransaction.replace(R.id.frame_container_main, fragment, fragmentTag);
+            fragmentTransaction.add(R.id.frame_container_main, fragment, fragmentTag);
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
         } else {
