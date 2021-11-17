@@ -4,15 +4,17 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import ru.geekbrains.notes.BuildConfig;
 import ru.geekbrains.notes.R;
 
 
@@ -33,15 +35,16 @@ public class AboutFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_about, container, false);
-
         Log.v("Debug1", "AboutFragment onCreateView");
-        TextView textView = v.findViewById(R.id.textView2);
-        int versionCode = BuildConfig.VERSION_CODE;
-        String versionName = BuildConfig.VERSION_NAME;
-        String strAbout = versionCode + " " + versionName;
-        textView.setText(strAbout);
-
+        //getActivity().en
         return v;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        TextView textView = view.findViewById(R.id.textView3);
+        textView.setText(HtmlCompat.fromHtml(getString(R.string.textAbout), HtmlCompat.FROM_HTML_MODE_LEGACY));
     }
 
     @Override
