@@ -18,5 +18,3 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:layout="@layout/fragment_list_notes" />
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-<!-- -->
